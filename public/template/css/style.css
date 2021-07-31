@@ -1,0 +1,15 @@
+.navbar{
+    background-color: #46a0e0;
+}
+
+.container {
+    min-height: 560px;
+    padding: 8rem 0rem;
+}
+
+.content{
+    padding: 1rem 0rem;
+}
+footer{
+    background-color: #a2d9ff;
+}
