@@ -14,12 +14,21 @@
             {{ session('pesan') }}.
         </div>
     @endif
+
+    @if (session('pesan_dihapus'))
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="fa fa-exclamation"></i>Perhatian</h4>
+            {{ session('pesan_dihapus') }}.
+        </div>
+    @endif
     <div class="row">
         <div class="mt-4">
             <div class="table-responsive">
                 <table class="table table-bordered table-sm text-center">
                     <thead>
                         <tr>
+                            <th class="align-middle">No</th>
                             <th class="align-middle">NIP</th>
                             <th class="align-middle">Nama</th>
                             <th class="align-middle">Mata Pelajaran</th>
@@ -28,8 +37,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $no=1 ?>
                         @foreach ($guru as $data)
                             <tr>
+                                <td class="align-middle">{{ $no++}}</td>
                                 <td class="align-middle">{{ $data->nip }}</td>
                                 <td class="align-middle">{{ $data->nama }}</td>
                                 <td class="align-middle">{{ $data->mapel }}</td>
@@ -43,7 +54,7 @@
                                             <a class="btn btn-success" href="/guru/edit/{{$data->id_guru}}">Edit</a>
                                         </div>
                                         <div class="col-sm-3">
-                                            <button class="btn btn-danger" data-toggle="modal" data-target="#delete{{ $data->id_guru }}">Delete</button>
+                                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $data->id_guru }}">Delete</button>
                                         </div>
                                     </div>
                                 </td>
@@ -55,41 +66,38 @@
         </div>
     </div>
     @foreach ($guru as $data)
-    <div class="modal modal-danger fade" id="delete{{ $data->id_guru }}">
+    <div class="modal bg-danger fade" data-bs-backdrop="static" data-bs-keyboard="false" id="delete{{ $data->id_guru }}" aria-hidden="true" tabindex="-1">
         <div class="modal-dialog modal-md">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title">Apakah Anda yakin akan menghapus data dibawah ini?</h5>
+                
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title">Apakah Anda Yakin?</h4>
             </div>
-            <div class="modal-body">
-                <table>
-                    <tr>
-                        <th width="100px">NIP</th>
-                        <th width="30px">:</th>
-                        <th>{{ $data->nip }}</th>
-                    </tr>
-                    <tr>
-                        <th width="100px">Nama Guru</th>
-                        <th width="30px">:</th>
-                        <th>{{ $data->nama }}</th>
-                    </tr>
-                    <tr>
-                        <th width="100px">Mata Pelajaran</th>
-                        <th width="30px">:</th>
-                        <th>{{ $data->mapel }}</th>
-                    </tr>
-                    <tr>
-                        <th width="100px">Foto Guru</th>
-                        <th width="30px">:</th>
-                        <th><img src="{{ url('foto/' . $data->foto_guru) }}" alt="foto" width="400px"></th>
-                    </tr>
-                </table>
+            <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-sm-4">NIP</div>
+                        <div class="col-sm-1">:</div>
+                        <div class="col-sm-6">{{ $data->nip }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Nama Guru</div>
+                        <div class="col-sm-1">:</div>
+                        <div class="col-sm-6">{{ $data->nama }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Mata Pelajaran</div>
+                        <div class="col-sm-1">:</div>
+                        <div class="col-sm-6">{{ $data->mapel }}</div>
+                    </div>
+                    <div class="row mt-2">
+                        <img class="img-thumbnail" src="{{ url('foto/' . $data->foto_guru) }}" alt="foto_guru" width="150px">
+                    </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-outline">Save changes</button>
+              <button type="button" class="btn btn-outline pull-left" data-bs-dismiss="modal">Tidak</button>
+              <a href="/guru/delete/{{$data->id_guru}}" class="btn btn-outline">Ya</a>
             </div>
           </div>
         </div>

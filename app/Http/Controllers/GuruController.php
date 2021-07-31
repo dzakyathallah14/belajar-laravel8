@@ -42,7 +42,7 @@ class GuruController extends Controller
     {
         Request()->validate([
             'nip' => 'required|unique:tbl_guru,nip|min:4|max:5',
-            'nama' => 'required',
+            'nama' => 'required|regex:/^[A-Za-z\-\s]+$/',
             'mapel' => 'required',
             'foto_guru' => 'required|mimes:jpg,jpeg,bmp,png|max:1024',
         ], [
@@ -51,6 +51,7 @@ class GuruController extends Controller
             'nip.min' => 'NIP Minimal 4 Karakter',
             'nip.max' => 'NIP Maksimal 5 Karakter',
             'nama.required' => 'Nama Wajib Diisi',
+            'nama.regex:/^[A-Za-z\-\s]+$/' => 'Nama anda mengandung karakter selain alfabet',
             'mapel.required' => 'Mata Pelajaran Wajib Diisi',
             'foto_guru.required' => 'Wajib Upload Foto Anda',
             'foto_guru.mimes' => 'Ekstensi Gambar jpg, jpeg, bmp, png',
@@ -88,7 +89,7 @@ class GuruController extends Controller
     {
         Request()->validate([
             'nip' => 'required|min:4|max:5',
-            'nama' => 'required',
+            'nama' => 'required|regex:/^[A-Za-z\-\s]+$/',
             'mapel' => 'required',
             'foto_guru' => 'mimes:jpg,jpeg,bmp,png|max:1024',
         ], [
@@ -97,6 +98,7 @@ class GuruController extends Controller
             'nip.min' => 'NIP Minimal 4 Karakter',
             'nip.max' => 'NIP Maksimal 5 Karakter',
             'nama.required' => 'Nama Wajib Diisi',
+            'nama.regex' => 'Nama anda mengandung karakter selain alfabet',
             'mapel.required' => 'Mata Pelajaran Wajib Diisi',
             'foto_guru.mimes' => 'Ekstensi Gambar jpg, jpeg, bmp, png',
             'foto_guru.max' => 'Ukuran Gambar Maksimal 1 MB',
@@ -128,5 +130,14 @@ class GuruController extends Controller
         $this->GuruModel->editData($id_guru, $data);
         return redirect()->route('guru')->with('pesan', 'Data Berhasil Di-Update');
     }
-    
+    public function delete($id_guru)
+    {
+        //delete foto
+        $guru = $this->GuruModel->detailData($id_guru);
+        if ($guru->foto_guru <> "") {
+            unlink(public_path('foto') . '/' . $guru->foto_guru);
+        }
+        $this->GuruModel->deleteData($id_guru);
+        return redirect()->route('guru')->with('pesan_dihapus', 'Data Berhasil Dihapus');
+    }
 }
